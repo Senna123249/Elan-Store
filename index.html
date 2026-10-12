@@ -372,12 +372,12 @@ label{display: block;margin: 12px 0 6px;color: #93c5fd;font-size: 13px;font-weig
 <div style="text-align:center;margin-bottom:20px">
 <div style="background:linear-gradient(135deg, #2563eb, #38bdf8);width:55px;height:55px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;box-shadow: 0 8px 20px rgba(37,99,235,0.5);"><i class="fa-solid fa-store" style="color:#fff"></i></div>
 <h2 style="color:#f8fafc;text-shadow: 0 1px 3px rgba(0,0,0,0.5)">ELAN STORE</h2>
-<p class="note">Masuk atau daftar akun (Encrypted)</p>
+<p class="note">Masuk atau daftar akun (Database Enkripsi)</p>
 </div>
 
 <div id="formLoginContainer">
-<label>Username</label>
-<input id="loginUser" placeholder="Masukkan username">
+<label>Username / Email</label>
+<input id="loginUser" placeholder="Masukkan username/email">
 <label>Password</label>
 <input id="loginPass" type="password" placeholder="Masukkan password">
 <button class="btn" type="button" onclick="playActionSound(); prosesLogin();">Masuk Akun</button>
@@ -387,8 +387,8 @@ Belum punya akun? <button type="button" style="color:#38bdf8;background:none;bor
 </div>
 
 <div id="formRegisterContainer" class="hidden">
-<label>Buat Username</label>
-<input id="regUser" placeholder="Username baru">
+<label>Email / Username Baru</label>
+<input id="regUser" placeholder="email@domain.com atau username">
 <label>Buat Password</label>
 <input id="regPass" type="password" placeholder="Minimal 6 karakter">
 <button class="btn btn-green" type="button" onclick="playClickSound(); prosesRegister();">Daftar Akun</button>
@@ -671,7 +671,7 @@ const AI_ENDPOINT = "https://api.omegatech.app/api/ai/Qwen-mv2";
 
 let currentSelectedCategory = "Semua";
 
-// REAL-TIME LISTENER ANTAR TAB & DEVICE SIMULATOR
+// REAL-TIME BROADCAST LISTENER (SINKRONISASI OTOMATIS ANTAR TAB & PERANGKAT)
 window.addEventListener("storage", function(event) {
     if (event.key === "senna_produk") {
         produkList = ambilData("senna_produk", produkList);
@@ -1189,48 +1189,60 @@ function cekBatasanDeviceRegister() {
     return true;
 }
 
+// SIMPAN USERNAME / EMAIL DAN PASSWORD KE DATABASE (LOCALSTORAGE)
 function prosesRegister() {
     if (!cekBatasanDeviceRegister()) return;
-    const username = sanitize(document.getElementById("regUser").value.trim());
+    const emailOrUser = sanitize(document.getElementById("regUser").value.trim());
     const password = document.getElementById("regPass").value;
-    if (!username || !password) return alert("Isi semua data.");
-    if (username.length < 3 || password.length < 6) return alert("Min. username 3 & password 6 karakter.");
-    if (akunList.some(a => a.username.toLowerCase() === username.toLowerCase())) return alert("Username sudah ada.");
     
-    akunList.push({username, password});
-    simpanData("senna_akun", akunList);
+    if (!emailOrUser || !password) return alert("Isi email/username dan password.");
+    if (emailOrUser.length < 3 || password.length < 6) return alert("Min. karakter 3 (user/email) & 6 (password).");
     
-    alert("Pendaftaran berhasil! Otomatis masuk ke toko.");
-    loginSukses(username, "buyer");
-}
-
-function prosesLogin() {
-    const username = sanitize(document.getElementById("loginUser").value.trim());
-    const password = document.getElementById("loginPass").value;
-
-    if (!username || !password) {
-        alert("Masukkan username dan password.");
+    akunList = ambilData("senna_akun", []);
+    if (akunList.some(a => a.username.toLowerCase() === emailOrUser.toLowerCase())) {
+        alert("Email atau username sudah terdaftar di database!");
         return;
     }
 
-    if (username.toLowerCase() === OWNER_USER.toLowerCase() && (password === OWNER_PASS || password === "Elan1531.")) {
+    akunList.push({ username: emailOrUser, password: password });
+    if (!simpanData("senna_akun", akunList)) {
+        alert("Gagal menyimpan ke database.");
+        return;
+    }
+
+    alert("Pendaftaran berhasil! Akun tersimpan ke database dan otomatis masuk.");
+    loginSukses(emailOrUser, "buyer");
+}
+
+function prosesLogin() {
+    const emailOrUser = sanitize(document.getElementById("loginUser").value.trim());
+    const password = document.getElementById("loginPass").value;
+
+    if (!emailOrUser || !password) {
+        alert("Masukkan email/username dan password.");
+        return;
+    }
+
+    if (emailOrUser.toLowerCase() === OWNER_USER.toLowerCase() && (password === OWNER_PASS || password === "Elan1531.")) {
         loginSukses(OWNER_USER, "owner");
         return;
     }
 
-    let resAccount = resellerList.find(r => r.username.toLowerCase() === username.toLowerCase() && r.password === password);
+    resellerList = ambilData("senna_reseller_list", resellerList);
+    let resAccount = resellerList.find(r => r.username.toLowerCase() === emailOrUser.toLowerCase() && r.password === password);
     if (resAccount) {
         loginSukses(resAccount.username, "reseller");
         return;
     }
 
+    akunList = ambilData("senna_akun", []);
     const akun = akunList.find(a =>
-        a.username.toLowerCase() === username.toLowerCase() &&
+        a.username.toLowerCase() === emailOrUser.toLowerCase() &&
         a.password === password
     );
 
     if (!akun) {
-        alert("Username atau password salah.");
+        alert("Email/Username atau password salah.");
         return;
     }
 
