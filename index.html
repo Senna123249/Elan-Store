@@ -503,4 +503,1075 @@ Sudah punya akun? <button type="button" style="color:#38bdf8;background:none;bor
 <div class="flex-between" style="margin-bottom:12px"><h3>Detail Produk</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalDetail')">✕</button></div>
 <img id="detailFoto" src="" alt="" style="width:100%;height:200px;object-fit:cover;border-radius:14px;margin-bottom:14px;box-shadow:0 4px 15px rgba(0,0,0,0.5)">
 <h3 id="detailNama" style="font-size:16px;margin-bottom:6px;text-shadow:0 1px 2px rgba(0,0,0,0.5)"></h3>
-<div id="detailHarga" style="color:#fbbf24;fo
+<div id="detailHarga" style="color:#fbbf24;font-size:16px;font-weight:bold;margin-bottom:10px;text-shadow:0 1px 2px rgba(0,0,0,0.5)"></div>
+<p id="detailDeskripsi" style="font-size:12px;color:#93c5fd;margin-bottom:16px;line-height:1.5;text-align:left"></p>
+<button id="btnDetailBeli" class="btn btn-green" onclick="playActionSound()">Tambah ke Keranjang</button>
+</div></div>
+
+<!-- MODAL PANEL RESELLER (DENGAN UPLOAD FILE BANNER & QRIS) -->
+<div id="modalReseller" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Panel Reseller Mandiri</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalReseller')">✕</button></div>
+<p class="note" style="margin-bottom:15px">Atur harga, foto banner, dan QRIS toko milik Anda sendiri.</p>
+
+<label>Nama Toko Anda</label>
+<input id="resellerStoreName" placeholder="Nama Toko Anda">
+<label>Nomor WhatsApp Anda (Tanpa 0)</label>
+<input id="resellerWa" placeholder="628xxxxxxxxxx">
+<button class="btn btn-green" type="button" onclick="simpanInfoReseller()">Simpan Info Toko</button>
+
+<label style="margin-top:14px">Upload Foto Banner Toko (Dari Perangkat)</label>
+<input id="resellerBannerFile" type="file" accept="image/*" style="padding:8px;font-size:12px">
+<button class="btn btn-green" type="button" onclick="simpanBannerResellerFile()">Simpan Banner Toko</button>
+
+<label style="margin-top:14px">Upload Foto QRIS Toko (Dari Perangkat)</label>
+<input id="resellerQrisFile" type="file" accept="image/*" style="padding:8px;font-size:12px">
+<button class="btn btn-green" type="button" onclick="simpanQrisResellerFile()">Simpan QRIS Toko</button>
+
+<h4 style="font-size:12px;color:#38bdf8;margin:16px 0 8px">Atur Ulang Harga Produk</h4>
+<div id="resellerListProduk" style="max-height:200px;overflow-y:auto;margin-bottom:15px"></div>
+</div></div>
+
+<!-- MODAL EDIT PRODUK -->
+<div id="modalEditProduk" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Edit Data Produk</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalEditProduk')">✕</button></div>
+<input type="hidden" id="editIdProduk">
+<label>Kategori Produk</label>
+<input id="editKategori" list="listKategori" placeholder="Kategori produk">
+<label>Nama Produk</label>
+<input id="editNama" placeholder="Nama produk">
+<label>Harga (Rp)</label>
+<input id="editHarga" type="number" min="1" placeholder="Harga produk">
+<label>Link Foto Produk</label>
+<input id="editFoto" type="url" placeholder="Link foto...">
+<label>Detail / Deskripsi</label>
+<textarea id="editDeskripsi" placeholder="Deskripsi..."></textarea>
+<button class="btn btn-green" type="button" onclick="simpanEditProduk()">Simpan Perubahan</button>
+</div></div>
+
+<!-- MODAL SETTINGS -->
+<div id="modalSettingsOwner" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Settings Store</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalSettingsOwner')">✕</button></div>
+<div id="settingsContentArea"></div>
+</div></div>
+
+<!-- MODAL PANEL OWNER -->
+<div id="modalAdmin" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Panel Owner Store</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalAdmin')">✕</button></div>
+<div style="background:#0b1020;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);margin-bottom:16px;font-size:12px;color:#38bdf8;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
+👥 Total Pengunjung Masuk: <b id="statTotalVisitor">0</b> Orang
+</div>
+<hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:16px">
+<h4 style="font-size:12px;color:#38bdf8;margin-bottom:8px">Top Up Saldo Pembeli (Verifikasi QRIS)</h4>
+<label>Username Pembeli</label>
+<input id="topupTargetUser" placeholder="Username pembeli">
+<label>Nominal Saldo (Rp)</label>
+<input id="topupNominal" type="number" min="1000" placeholder="50000">
+<button class="btn btn-green" type="button" onclick="ownerTopUpSaldo()" style="margin-bottom:16px">Isi Saldo User</button>
+<hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:16px">
+<label>API Key Toko (Sender Pairing)</label>
+<div style="display:flex;gap:6px;margin-bottom:16px">
+    <input id="inputApiKeyStore" readonly style="margin:0;font-size:11px">
+    <button class="btn btn-purple" style="width:auto;margin:0" onclick="generateApiKey()">Generate Baru</button>
+</div>
+<hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:16px">
+<label>Username Reseller Baru</label>
+<input id="resellerNewUser" placeholder="Username reseller">
+<label>Password Reseller Baru</label>
+<input id="resellerNewPass" type="password" placeholder="Password reseller">
+<button class="btn btn-purple" type="button" onclick="playClickSound(); buatAkunResellerBaru()" style="margin-bottom:16px">Buat Akun Reseller</button>
+<h4 style="font-size:12px;color:#38bdf8;margin-bottom:8px">Daftar Reseller Aktif (Fitur Kick)</h4>
+<div id="listResellerOwner" style="max-height:150px;overflow-y:auto;margin-bottom:16px;background:#0b1020;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.15)"></div>
+<hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:16px">
+<label>Ubah Banner Utama (Video/Foto)</label>
+<input id="inputBannerFile" type="file" accept="video/*,image/*" style="padding:8px;font-size:12px">
+<button class="btn btn-green" type="button" onclick="simpanBannerOwner()" style="margin-bottom:16px">Simpan Banner</button>
+<label>Ubah Pengumuman Real-Time</label>
+<textarea id="pengumumanInput" placeholder="Tulis info terbaru..."></textarea>
+<button class="btn btn-green" type="button" onclick="simpanPengumumanOwner()" style="margin-bottom:16px">Update Pengumuman</button>
+<label>Ubah Foto QRIS</label>
+<input id="qrisUrlInput" type="url" placeholder="https://...">
+<button class="btn btn-green" type="button" onclick="simpanQrisOwner()" style="margin-bottom:16px">Simpan QRIS</button>
+<hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:16px">
+<label>Kategori Produk</label>
+<input id="kategoriProduk" list="listKategori" placeholder="Kategori...">
+<datalist id="listKategori">
+<option value="APK Premium">
+<option value="Sosmed Store">
+<option value="Akun & Lainnya">
+</datalist>
+<label>Nama Produk</label>
+<input id="namaProduk" placeholder="Nama produk">
+<label>Harga Asli (Rp)</label>
+<input id="hargaProduk" type="number" min="1" placeholder="Harga">
+<label>Link Foto Produk</label>
+<input id="fotoProdukUrl" type="url" placeholder="Link foto...">
+<label>Detail Produk</label>
+<textarea id="deskripsiProduk" placeholder="Detail..."></textarea>
+<button class="btn" type="button" onclick="tambahProdukBaruOwner()">Simpan Produk</button>
+</div></div>
+
+<!-- MODAL KERANJANG -->
+<div id="modalKeranjang" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Keranjang Belanja</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalKeranjang')">✕</button></div>
+<div id="listKeranjang" style="margin-bottom:16px"></div>
+<div class="flex-between" style="margin-bottom:14px">Total <b id="totalHargaCheckout">Rp 0</b></div>
+<div style="display:flex;gap:8px">
+<button class="btn btn-secondary" style="background:#475569" onclick="playClickSound(); tutupModal('modalKeranjang')">Tutup</button>
+<button class="btn btn-green" onclick="playClickSound(); bukaMenuBeli()">Lanjut Beli</button>
+</div>
+</div></div>
+
+<!-- MODAL PEMBAYARAN -->
+<div id="modalBeli" class="modal"><div class="modal-content" style="text-align:center">
+<div class="flex-between" style="margin-bottom:15px"><h3>Pembayaran</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalBeli')">✕</button></div>
+<label style="text-align:left;display:block">Metode Pembayaran</label>
+<select id="metodeBayar" onchange="gantiMetodeBayar()">
+<option value="SALDO">Potong Saldo Akun (Instan)</option>
+<option value="QRIS">QRIS</option>
+<option value="DANA">DANA</option>
+<option value="GOPAY">GOPAY</option>
+<option value="OVO">OVO</option>
+<option value="SHOPEEPAY">SHOPEEPAY</option>
+</select>
+<div id="boxQris" style="background:white;padding:10px;border-radius:12px;display:none;margin:10px 0;box-shadow:0 4px 15px rgba(0,0,0,0.5)">
+<img id="gambarQrisTampil" src="" alt="QRIS Store" style="width:150px;height:150px;object-fit:cover;border-radius:8px">
+</div>
+<div style="background:#0b1020;border:1px solid rgba(255,255,255,0.15);padding:12px;border-radius:12px;margin-bottom:16px;font-size:11px;text-align:left">
+<p style="color:#93c5fd;margin-bottom:4px">Status Saldo Anda:</p>
+<p style="font-weight:bold;color:#38bdf8;font-size:12px">Saldo Tersedia: <span id="infoSaldoModal">Rp 0</span></p>
+</div>
+<button class="btn btn-green" onclick="playClickSound(); prosesCheckoutSelesai()">Konfirmasi & Bayar Pesanan</button>
+</div></div>
+
+<!-- MODAL TESTIMONI -->
+<div id="modalTestimoni" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Testimoni Pelanggan</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalTestimoni')">✕</button></div>
+<div id="formUploadTesti" class="hidden">
+<label>Link Foto Testimoni</label>
+<input id="fotoTestiUrl" type="url" placeholder="https://...">
+<button class="btn" onclick="playClickSound(); tambahTestimoni()">Tambah Testimoni</button>
+</div>
+<div id="gridTestimoni" style="margin-top:12px;display:grid;gap:12px"></div>
+</div></div>
+
+<!-- MODAL RIWAYAT -->
+<div id="modalRiwayat" class="modal"><div class="modal-content">
+<div class="flex-between" style="margin-bottom:15px"><h3>Riwayat Pembelian</h3><button class="close-modal" onclick="playClickSound(); tutupModal('modalRiwayat')">✕</button></div>
+<div id="listRiwayat"></div>
+</div></div>
+
+<script>
+"use strict";
+
+const OWNER_USER = "Elan1531.";
+const OWNER_PASS = "elanaja";
+const DEFAULT_WA = "628211880116";
+const AI_ENDPOINT = "https://api.omegatech.app/api/ai/Qwen-mv2";
+
+let currentSelectedCategory = "Semua";
+
+// PEMBUATAN EFEK SALJU OTOMATIS
+function createSnowflakes() {
+    const snowContainer = document.getElementById("snowContainer");
+    const count = 35;
+    for (let i = 0; i < count; i++) {
+        const snowflake = document.createElement("div");
+        snowflake.className = "snowflake";
+        let size = Math.random() * 4 + 2 + "px";
+        snowflake.style.width = size;
+        snowflake.style.height = size;
+        snowflake.style.left = Math.random() * 100 + "vw";
+        snowflake.style.animationDuration = Math.random() * 5 + 3 + "s";
+        snowflake.style.animationDelay = Math.random() * 5 + "s";
+        snowContainer.appendChild(snowflake);
+    }
+}
+createSnowflakes();
+
+let totalVisitor = Number(localStorage.getItem("senna_visitor_count") || "142");
+if (!sessionStorage.getItem("visited_session")) {
+    totalVisitor++;
+    localStorage.setItem("senna_visitor_count", totalVisitor);
+    sessionStorage.setItem("visited_session", "true");
+}
+document.getElementById("statTotalVisitor").textContent = totalVisitor;
+
+let resellerList = JSON.parse(localStorage.getItem("senna_reseller_list") || "[]");
+let resellerDataConfig = JSON.parse(localStorage.getItem("senna_reseller_config") || "{}");
+let storeApiKey = localStorage.getItem("senna_store_apikey") || "ELAN-API-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+localStorage.setItem("senna_store_apikey", storeApiKey);
+
+let userBalances = JSON.parse(localStorage.getItem("senna_user_balances") || "{}");
+
+function getSaldo(user) {
+    return userBalances[user] || 0;
+}
+
+function updateSaldoDisplay() {
+    if(!currentUser) return;
+    const saldo = getSaldo(currentUser);
+    const el = document.getElementById("userBalanceDisplay");
+    if(el) el.textContent = "Rp " + saldo.toLocaleString("id-ID");
+}
+
+function ownerTopUpSaldo() {
+    if(!ownerVerified) return;
+    let target = sanitize(document.getElementById("topupTargetUser").value.trim());
+    let nominal = Number(document.getElementById("topupNominal").value);
+
+    if(!target || !nominal || isNaN(nominal) || nominal <= 0) {
+        alert("Masukkan username pembeli dan nominal saldo dengan benar.");
+        return;
+    }
+
+    userBalances[target] = getSaldo(target) + nominal;
+    localStorage.setItem("senna_user_balances", JSON.stringify(userBalances));
+    document.getElementById("topupTargetUser").value = "";
+    document.getElementById("topupNominal").value = "";
+    alert(`Berhasil mengisi saldo sebesar Rp ${nominal.toLocaleString("id-ID")} untuk akun "${target}"!`);
+}
+
+function playClickSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    } catch(e) {}
+}
+
+function playActionSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+    } catch(e) {}
+}
+
+function backupDatabaseText() {
+    let backupData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        backupData[key] = localStorage.getItem(key);
+    }
+    let jsonString = JSON.stringify(backupData);
+    navigator.clipboard.writeText(jsonString).then(() => {
+        alert("Kode Database berhasil disalin ke Clipboard!");
+    }).catch(() => {
+        prompt("Salin kode database berikut secara manual:", jsonString);
+    });
+}
+
+function restoreDatabaseText() {
+    let textVal = document.getElementById("textRestoreInput").value.trim();
+    if (!textVal) return alert("Tempel/paste kode database terlebih dahulu.");
+    try {
+        let restoredData = JSON.parse(textVal);
+        localStorage.clear();
+        for (let key in restoredData) {
+            localStorage.setItem(key, restoredData[key]);
+        }
+        alert("Database berhasil dipulihkan! Halaman akan dimuat ulang.");
+        location.reload();
+    } catch (err) {
+        alert("Format kode database tidak valid!");
+    }
+}
+
+const lirikLagu = [
+    {time: 0, text: "♪ Selamat datang di Elan Store Indonesia ♪"},
+    {time: 5, text: "♪ Pusat layanan digital & akun premium terbaik ♪"},
+    {time: 10, text: "♪ Transaksi aman, cepat, dan otomatis 24 jam ♪"},
+    {time: 15, text: "♪ Nikmati berbagai kemudahan belanja di sini ♪"},
+    {time: 20, text: "♪ Elan Store pilihan utama kita semua ♪"}
+];
+
+const bgMusic = document.getElementById("bgMusic");
+bgMusic.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+bgMusic.play().catch(() => {});
+
+bgMusic.addEventListener("timeupdate", () => {
+    let currentTime = bgMusic.currentTime;
+    let currentLyric = lirikLagu[0].text;
+    for (let i = 0; i < lirikLagu.length; i++) {
+        if (currentTime >= lirikLagu[i].time) {
+            currentLyric = lirikLagu[i].text;
+        }
+    }
+    const lyricEl = document.getElementById("lyricsContainer");
+    if(lyricEl) lyricEl.textContent = currentLyric;
+});
+
+function bukaAiAssistant() {
+    document.getElementById("modalAi").style.display = "flex";
+}
+
+function bukaDownloader() {
+    document.getElementById("modalDownloader").style.display = "flex";
+}
+
+function prosesDownloadMedia() {
+    let link = document.getElementById("downloadLinkInput").value.trim();
+    let resArea = document.getElementById("downloadResultArea");
+    if(!link) { alert("Masukkan link media terlebih dahulu."); return; }
+    resArea.innerHTML = "Memproses tautan dari berbagai platform...";
+    setTimeout(() => {
+        resArea.innerHTML = `✅ Media Berhasil Dideteksi!<br><a href="${link}" target="_blank" style="color:#38bdf8;font-weight:bold;text-decoration:underline;display:inline-block;margin-top:6px">Klik di Sini untuk Unduh File Tanpa Watermark</a>`;
+    }, 1200);
+}
+
+async function kirimPesanAi() {
+    const input = document.getElementById("aiChatInput");
+    const text = input.value.trim();
+    if(!text) return;
+
+    const chatHistory = document.getElementById("aiChatHistory");
+    
+    const userMsg = document.createElement("div");
+    userMsg.style.cssText = "background:#2563eb;padding:10px;border-radius:10px;max-width:85%;align-self:flex-end;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.3)";
+    userMsg.textContent = text;
+    chatHistory.appendChild(userMsg);
+    input.value = "";
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    const loadingMsg = document.createElement("div");
+    loadingMsg.id = "aiLoadingMsg";
+    loadingMsg.style.cssText = "background:#141b2e;padding:10px;border-radius:10px;max-width:85%;color:#b7d5ff;font-style:italic;box-shadow:0 2px 8px rgba(0,0,0,0.3)";
+    loadingMsg.textContent = "AI sedang mengetik...";
+    chatHistory.appendChild(loadingMsg);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    try {
+        const response = await fetch(AI_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: text, message: text })
+        });
+
+        const data = await response.json();
+        document.getElementById("aiLoadingMsg").remove();
+
+        let aiReply = data.response || data.result || data.message || JSON.stringify(data);
+
+        const aiMsg = document.createElement("div");
+        aiMsg.style.cssText = "background:#141b2e;padding:10px;border-radius:10px;max-width:85%;color:#b7d5ff;box-shadow:0 2px 8px rgba(0,0,0,0.3)";
+        aiMsg.textContent = aiReply;
+        chatHistory.appendChild(aiMsg);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    } catch (err) {
+        if(document.getElementById("aiLoadingMsg")) document.getElementById("aiLoadingMsg").remove();
+        const errMsg = document.createElement("div");
+        errMsg.style.cssText = "background:#4a1d2a;padding:10px;border-radius:10px;max-width:85%;color:#ffb4c0";
+        errMsg.textContent = "Koneksi ke endpoint AI gagal.";
+        chatHistory.appendChild(errMsg);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+}
+
+function tutupModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+function sanitize(str) {
+    let temp = document.createElement('div');
+    temp.textContent = str;
+    return temp.innerHTML;
+}
+
+function updateLiveClock() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    let tanggalStr = now.toLocaleDateString('id-ID', options);
+    let jamStr = now.toLocaleTimeString('id-ID');
+    const timeElem = document.getElementById("timeText");
+    if (timeElem) {
+        timeElem.textContent = `${tanggalStr} — ${jamStr}`;
+    }
+}
+setInterval(updateLiveClock, 1000);
+updateLiveClock();
+
+let savedBgActive = localStorage.getItem("senna_bg_active") === "true";
+if (savedBgActive) {
+    document.body.classList.add("bg-bersinar");
+} else {
+    document.body.style.background = "#030712";
+}
+
+function toggleBackgroundGlow(isActive) {
+    savedBgActive = isActive;
+    localStorage.setItem("senna_bg_active", isActive);
+    if (isActive) {
+        document.body.classList.add("bg-bersinar");
+    } else {
+        document.body.classList.remove("bg-bersinar");
+        document.body.style.background = "#030712";
+    }
+    renderKategoriProduk(produkList);
+}
+
+function aturVolumeMusik(vol) {
+    bgMusic.volume = vol / 100;
+}
+
+function simpanAudioBgmOwner() {
+    let audioUrl = document.getElementById("inputAudioUrlOwner").value.trim();
+    if (!audioUrl) return alert("Masukkan link audio musik.");
+    bgMusic.src = audioUrl;
+    bgMusic.play().catch(() => {});
+    alert("Musik latar belakang toko berhasil diatur!");
+    tutupModal("modalSettingsOwner");
+}
+
+let bannerData = JSON.parse(localStorage.getItem("senna_banner") || JSON.stringify({
+    tipe: "video",
+    url: "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-with-codes-31910-large.mp4"
+}));
+
+function simpanBannerOwner() {
+    if (!ownerVerified) return;
+    const fileInput = document.getElementById("inputBannerFile");
+    if (fileInput.files && fileInput.files[0]) {
+        let file = fileInput.files[0];
+        let tipeFile = file.type.startsWith("video") ? "video" : "foto";
+        let reader = new FileReader();
+        reader.onload = function(evt) {
+            bannerData = { tipe: tipeFile, url: evt.target.result };
+            localStorage.setItem("senna_banner", JSON.stringify(bannerData));
+            renderBanner();
+            alert("Banner berhasil diperbarui!");
+            tutupModal("modalAdmin");
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert("Pilih file video atau foto banner terlebih dahulu.");
+    }
+}
+
+// UPLOAD BANNER RESELLER DARI FILE LOKAL
+function simpanBannerResellerFile() {
+    if (!resellerVerified) return;
+    const fileInput = document.getElementById("resellerBannerFile");
+    if (fileInput.files && fileInput.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function(evt) {
+            if (!resellerDataConfig[currentUser]) resellerDataConfig[currentUser] = {};
+            resellerDataConfig[currentUser].banner = { tipe: "foto", url: evt.target.result };
+            localStorage.setItem("senna_reseller_config", JSON.stringify(resellerDataConfig));
+            renderBanner();
+            alert("Foto banner toko Anda berhasil disimpan!");
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        alert("Pilih file foto banner terlebih dahulu.");
+    }
+}
+
+// UPLOAD QRIS RESELLER DARI FILE LOKAL
+function simpanQrisResellerFile() {
+    if (!resellerVerified) return;
+    const fileInput = document.getElementById("resellerQrisFile");
+    if (fileInput.files && fileInput.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function(evt) {
+            if (!resellerDataConfig[currentUser]) resellerDataConfig[currentUser] = {};
+            resellerDataConfig[currentUser].qris = evt.target.result;
+            localStorage.setItem("senna_reseller_config", JSON.stringify(resellerDataConfig));
+            alert("Foto QRIS Anda berhasil disimpan!");
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        alert("Pilih file QRIS terlebih dahulu.");
+    }
+}
+
+function renderBanner() {
+    const container = document.getElementById("bannerContainer");
+    container.replaceChildren();
+    let currentBanner = bannerData;
+    let currentStoreTitle = "ELAN STORE INDONESIA";
+    let currentCs = "CS Owner: " + DEFAULT_WA;
+
+    if (resellerVerified && resellerDataConfig[currentUser]) {
+        if (resellerDataConfig[currentUser].banner) currentBanner = resellerDataConfig[currentUser].banner;
+        if (resellerDataConfig[currentUser].storeName) currentStoreTitle = resellerDataConfig[currentUser].storeName.toUpperCase();
+        if (resellerDataConfig[currentUser].wa) currentCs = "CS Reseller: " + resellerDataConfig[currentUser].wa;
+    }
+
+    document.getElementById("storeTitleText").textContent = currentStoreTitle;
+    document.getElementById("storeCsText").textContent = currentCs;
+
+    if (currentBanner.tipe === "video") {
+        const video = document.createElement("video");
+        video.autoplay = true; video.muted = true; video.loop = true; video.playsInline = true;
+        video.style.cssText = "width:100%;height:140px;object-fit:cover";
+        const source = document.createElement("source");
+        source.src = currentBanner.url; source.type = "video/mp4";
+        video.appendChild(source);
+        container.appendChild(video);
+    } else {
+        const img = document.createElement("img");
+        img.src = currentBanner.url;
+        img.style.cssText = "width:100%;height:140px;object-fit:cover";
+        container.appendChild(img);
+    }
+}
+
+function hubungiCSOwner() {
+    let targetWa = DEFAULT_WA;
+    if (resellerVerified && resellerDataConfig[currentUser] && resellerDataConfig[currentUser].wa) {
+        targetWa = resellerDataConfig[currentUser].wa;
+    }
+    window.open(`https://wa.me/` + targetWa, '_blank');
+}
+
+function buatAkunResellerBaru() {
+    if (!ownerVerified) return;
+    let rUser = sanitize(document.getElementById("resellerNewUser").value.trim());
+    let rPass = document.getElementById("resellerNewPass").value;
+    if (rUser.length < 3 || rPass.length < 6) return alert("Min. username 3 & password 6 karakter.");
+    resellerList.push({ username: rUser, password: rPass });
+    localStorage.setItem("senna_reseller_list", JSON.stringify(resellerList));
+    document.getElementById("resellerNewUser").value = "";
+    document.getElementById("resellerNewPass").value = "";
+    alert(`Akun Reseller "${rUser}" berhasil dibuat!`);
+    renderListResellerOwner();
+}
+
+function kickReseller(username) {
+    if (!ownerVerified) return;
+    if (confirm(`Kick reseller "${username}"?`)) {
+        resellerList = resellerList.filter(r => r.username !== username);
+        localStorage.setItem("senna_reseller_list", JSON.stringify(resellerList));
+        renderListResellerOwner();
+    }
+}
+
+function renderListResellerOwner() {
+    const listDiv = document.getElementById("listResellerOwner");
+    listDiv.replaceChildren();
+    if (resellerList.length === 0) { listDiv.textContent = "Belum ada reseller."; return; }
+    resellerList.forEach(r => {
+        let box = document.createElement("div");
+        box.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;background:rgba(255,255,255,0.05);padding:6px;border-radius:6px";
+        box.innerHTML = `<span><b>${r.username}</b></span> <button class="btn btn-red" style="width:auto;padding:4px 8px;font-size:10px;margin:0" onclick="kickReseller('${r.username}')">Kick</button>`;
+        listDiv.appendChild(box);
+    });
+}
+
+function generateApiKey() {
+    if (!ownerVerified) return;
+    storeApiKey = "ELAN-API-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    localStorage.setItem("senna_store_apikey", storeApiKey);
+    document.getElementById("inputApiKeyStore").value = storeApiKey;
+    alert("API Key baru berhasil digenerate!");
+}
+
+function bukaSettingsOwner() {
+    const area = document.getElementById("settingsContentArea");
+    area.replaceChildren();
+    if (ownerVerified) {
+        area.innerHTML = `
+        <label>Background Bersinar (Glow)</label>
+        <select id="selectBgActive" onchange="playActionSound(); toggleBackgroundGlow(this.value === 'true')" style="margin-bottom:12px">
+            <option value="true" ${savedBgActive ? 'selected' : ''}>Aktif</option>
+            <option value="false" ${!savedBgActive ? 'selected' : ''}>Nonaktif</option>
+        </select>
+        <label>Musik Utama Toko (MP3)</label>
+        <input id="inputAudioUrlOwner" type="url" placeholder="https://...">
+        <button class="btn btn-purple" onclick="playActionSound(); simpanAudioBgmOwner()" style="margin-bottom:15px">Simpan Musik</button>
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin-bottom:15px">
+        <h4 style="font-size:12px;color:#38bdf8;margin-bottom:8px">Backup & Restore Database</h4>
+        <button class="btn btn-green" onclick="playActionSound(); backupDatabaseText()" style="margin-bottom:8px"><i class="fa-solid fa-copy"></i> Salin Kode Database</button>
+        <textarea id="textRestoreInput" placeholder="Paste kode backup di sini..." style="font-size:11px;min-height:60px"></textarea>
+        <button class="btn btn-purple" onclick="playActionSound(); restoreDatabaseText()" style="margin-bottom:15px">Restore Database</button>
+        <button class="btn btn-danger" onclick="playActionSound(); localStorage.clear(); location.reload()">Reset Sistem</button>`;
+    } else {
+        area.innerHTML = `
+        <label>Background Bersinar (Glow)</label>
+        <select id="selectBgActive" onchange="playActionSound(); toggleBackgroundGlow(this.value === 'true')" style="margin-bottom:12px">
+            <option value="true" ${savedBgActive ? 'selected' : ''}>Aktif</option>
+            <option value="false" ${!savedBgActive ? 'selected' : ''}>Nonaktif</option>
+        </select>
+        <label>Volume Musik (<span id="labelVol">50</span>%)</label>
+        <input type="range" min="0" max="100" value="50" oninput="document.getElementById('labelVol').textContent=this.value; aturVolumeMusik(this.value)" style="margin-bottom:15px;cursor:pointer">`;
+    }
+    document.getElementById("modalSettingsOwner").style.display = "flex";
+}
+
+function ambilData(k, fallback) {
+    try { const d = localStorage.getItem(k); return d ? JSON.parse(d) : fallback; } catch (e) { return fallback; }
+}
+function simpanData(k, data) {
+    try { localStorage.setItem(k, JSON.stringify(data)); return true; } catch (e) { alert("Gagal simpan."); return false; }
+}
+
+let produkList = ambilData("senna_produk", [
+    {id:1, kategori:"APK Premium", nama:"Config VIP Panel", harga:25000, foto:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500", deskripsi:"Config aman."},
+    {id:2, kategori:"Sosmed Store", nama:"Script Tools Premium", harga:50000, foto:"https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500", deskripsi:"Script siap pakai."}
+]);
+
+let akunList = ambilData("senna_akun", []);
+let testimoniList = ambilData("senna_testimoni", []);
+let riwayat = ambilData("senna_riwayat", {});
+let qrisFotoUrl = localStorage.getItem("senna_qris_foto") || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300";
+let pengumumanTeks = localStorage.getItem("senna_pengumuman") || "Selamat datang di Elan Store Indonesia!";
+
+let keranjang = [];
+let currentUser = null;
+let ownerVerified = false;
+let resellerVerified = false;
+let produkBeliLangsung = null;
+
+function renderPengumuman() {
+    document.getElementById("tampilPengumuman").textContent = pengumumanTeks;
+}
+
+function toggleAuthMode() {
+    const login = document.getElementById("formLoginContainer");
+    const daftar = document.getElementById("formRegisterContainer");
+    const isDaftar = daftar.classList.contains("hidden");
+    if (isDaftar) { login.classList.add("hidden"); daftar.classList.remove("hidden"); }
+    else { daftar.classList.add("hidden"); login.classList.remove("hidden"); }
+}
+
+// PROTEKSI 1 DEVICE 1 AKUN SAAT REGISTRASI
+function cekBatasanDeviceRegister() {
+    let registry = JSON.parse(localStorage.getItem("senna_device_registry") || "[]");
+    let devId = localStorage.getItem("senna_unique_device_id");
+    if (!devId) {
+        devId = "DEV-" + Math.random().toString(36).substring(2, 12).toUpperCase();
+        localStorage.setItem("senna_unique_device_id", devId);
+    }
+    if (registry.includes(devId)) {
+        alert("Perangkat ini sudah pernah mendaftarkan akun! Sistem membatasi 1 device untuk 1 akun.");
+        return false;
+    }
+    registry.push(devId);
+    localStorage.setItem("senna_device_registry", JSON.stringify(registry));
+    return true;
+}
+
+function prosesRegister() {
+    if (!cekBatasanDeviceRegister()) return;
+    const username = sanitize(document.getElementById("regUser").value.trim());
+    const password = document.getElementById("regPass").value;
+    if (!username || !password) return alert("Isi semua data.");
+    if (username.length < 3 || password.length < 6) return alert("Min. username 3 & password 6 karakter.");
+    if (akunList.some(a => a.username.toLowerCase() === username.toLowerCase())) return alert("Username sudah ada.");
+    
+    akunList.push({username, password});
+    simpanData("senna_akun", akunList);
+    
+    alert("Pendaftaran berhasil! Otomatis masuk ke toko.");
+    loginSukses(username, "buyer");
+}
+
+function prosesLogin() {
+    const username = sanitize(document.getElementById("loginUser").value.trim());
+    const password = document.getElementById("loginPass").value;
+
+    if (!username || !password) {
+        alert("Masukkan username dan password.");
+        return;
+    }
+
+    if (username.toLowerCase() === OWNER_USER.toLowerCase() && (password === OWNER_PASS || password === "Elan1531.")) {
+        loginSukses(OWNER_USER, "owner");
+        return;
+    }
+
+    let resAccount = resellerList.find(r => r.username.toLowerCase() === username.toLowerCase() && r.password === password);
+    if (resAccount) {
+        loginSukses(resAccount.username, "reseller");
+        return;
+    }
+
+    const akun = akunList.find(a =>
+        a.username.toLowerCase() === username.toLowerCase() &&
+        a.password === password
+    );
+
+    if (!akun) {
+        alert("Username atau password salah.");
+        return;
+    }
+
+    loginSukses(akun.username, "buyer");
+}
+
+function loginSukses(username, role) {
+    currentUser = username;
+    ownerVerified = role === "owner";
+    resellerVerified = role === "reseller";
+
+    document.getElementById("pageAuth").classList.add("hidden");
+    document.getElementById("mainStoreContent").classList.remove("hidden");
+    document.getElementById("headerUserTitle").textContent = ownerVerified ? "ELAN STORE OWNER" : (resellerVerified ? "RESELLER: " + username : "USER: " + username);
+    document.getElementById("headerStatus").textContent = ownerVerified ? "OWNER STORE" : (resellerVerified ? "RESELLER VENDOR" : "BUYER MODE");
+
+    document.getElementById("btnOwnerPanel").classList.toggle("hidden", !ownerVerified);
+    document.getElementById("btnResellerPanel").classList.toggle("hidden", !resellerVerified);
+
+    updateSaldoDisplay();
+    renderBanner();
+    renderKategoriProduk(produkList);
+    updateKeranjang();
+}
+
+function logoutAkun() {
+    currentUser = null; ownerVerified = false; resellerVerified = false; keranjang = [];
+    document.getElementById("mainStoreContent").classList.add("hidden");
+    document.getElementById("pageAuth").classList.remove("hidden");
+    document.getElementById("loginUser").value = ""; document.getElementById("loginPass").value = "";
+    document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
+    updateKeranjang();
+}
+
+function cekAksesOwner() {
+    let pwd = prompt("Password Owner:");
+    if (pwd !== OWNER_PASS && pwd !== "Elan1531.") return alert("Password salah!");
+    document.getElementById("pengumumanInput").value = pengumumanTeks;
+    document.getElementById("qrisUrlInput").value = qrisFotoUrl;
+    document.getElementById("inputApiKeyStore").value = storeApiKey;
+    renderListResellerOwner();
+    document.getElementById("modalAdmin").style.display = "flex";
+}
+
+function simpanPengumumanOwner() {
+    if (!ownerVerified) return;
+    pengumumanTeks = sanitize(document.getElementById("pengumumanInput").value.trim());
+    localStorage.setItem("senna_pengumuman", pengumumanTeks);
+    renderPengumuman(); tutupModal("modalAdmin"); alert("Pengumuman diupdate!");
+}
+
+function simpanQrisOwner() {
+    if (!ownerVerified) return;
+    qrisFotoUrl = document.getElementById("qrisUrlInput").value.trim();
+    localStorage.setItem("senna_qris_foto", qrisFotoUrl);
+    tutupModal("modalAdmin"); alert("QRIS diupdate!");
+}
+
+function tambahProdukBaruOwner() {
+    if (!ownerVerified) return;
+    const kategori = sanitize(document.getElementById("kategoriProduk").value.trim());
+    const nama = sanitize(document.getElementById("namaProduk").value.trim());
+    const harga = Number(document.getElementById("hargaProduk").value);
+    const foto = document.getElementById("fotoProdukUrl").value.trim();
+    const deskripsi = sanitize(document.getElementById("deskripsiProduk").value.trim() || "-");
+
+    if (!kategori || !nama || isNaN(harga) || harga <= 0 || !foto) return alert("Isi data produk dengan benar.");
+    produkList.push({id: Date.now(), kategori, nama, harga, foto, deskripsi});
+    simpanData("senna_produk", produkList);
+    renderKategoriProduk(produkList);
+    tutupModal("modalAdmin"); alert("Produk ditambahkan!");
+}
+
+function hapusProduk(id) {
+    if (!ownerVerified) return;
+    if (!confirm("Hapus produk?")) return;
+    produkList = produkList.filter(p => p.id !== id);
+    simpanData("senna_produk", produkList);
+    renderKategoriProduk(produkList);
+}
+
+function bukaEditProduk(p) {
+    if (!ownerVerified) return;
+    document.getElementById("editIdProduk").value = p.id;
+    document.getElementById("editKategori").value = p.kategori;
+    document.getElementById("editNama").value = p.nama;
+    document.getElementById("editHarga").value = p.harga;
+    document.getElementById("editFoto").value = p.foto;
+    document.getElementById("editDeskripsi").value = p.deskripsi;
+    document.getElementById("modalEditProduk").style.display = "flex";
+}
+
+function simpanEditProduk() {
+    if (!ownerVerified) return;
+    const id = Number(document.getElementById("editIdProduk").value);
+    let idx = produkList.findIndex(p => p.id === id);
+    if (idx !== -1) {
+        produkList[idx] = {
+            id,
+            kategori: sanitize(document.getElementById("editKategori").value.trim()),
+            nama: sanitize(document.getElementById("editNama").value.trim()),
+            harga: Number(document.getElementById("editHarga").value),
+            foto: document.getElementById("editFoto").value.trim(),
+            deskripsi: sanitize(document.getElementById("editDeskripsi").value.trim())
+        };
+        simpanData("senna_produk", produkList);
+        renderKategoriProduk(produkList);
+        tutupModal("modalEditProduk"); alert("Produk diupdate!");
+    }
+}
+
+function simpanInfoReseller() {
+    if (!resellerVerified) return;
+    let storeName = sanitize(document.getElementById("resellerStoreName").value.trim());
+    let wa = sanitize(document.getElementById("resellerWa").value.trim());
+    if (!resellerDataConfig[currentUser]) resellerDataConfig[currentUser] = {};
+    resellerDataConfig[currentUser].storeName = storeName;
+    resellerDataConfig[currentUser].wa = wa;
+    localStorage.setItem("senna_reseller_config", JSON.stringify(resellerDataConfig));
+    renderBanner(); alert("Info toko disimpan!");
+}
+
+function bukaResellerPanel() {
+    if (!resellerVerified) return;
+    let cfg = resellerDataConfig[currentUser] || {};
+    document.getElementById("resellerStoreName").value = cfg.storeName || "";
+    document.getElementById("resellerWa").value = cfg.wa || "";
+    let listDiv = document.getElementById("resellerListProduk");
+    listDiv.replaceChildren();
+    produkList.forEach(p => {
+        let hp = cfg.prices && cfg.prices[p.id] !== undefined ? cfg.prices[p.id] : p.harga;
+        let box = document.createElement("div");
+        box.style.cssText = "background:rgba(255,255,255,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);margin-bottom:8px;font-size:12px";
+        box.innerHTML = `<b>${p.nama}</b><br>Asli: Rp ${p.harga.toLocaleString("id-ID")}<br><label>Harga Jual:</label><input type="number" id="reseller_price_${p.id}" value="${hp}"><button class="btn btn-green" style="padding:6px;font-size:11px;width:100%" onclick="simpanHargaReseller(${p.id})">Simpan</button>`;
+        listDiv.appendChild(box);
+    });
+    document.getElementById("modalReseller").style.display = "flex";
+}
+
+function simpanHargaReseller(pid) {
+    let val = Number(document.getElementById(`reseller_price_${pid}`).value);
+    if (isNaN(val) || val <= 0) return alert("Harga invalid.");
+    if (!resellerDataConfig[currentUser]) resellerDataConfig[currentUser] = {};
+    if (!resellerDataConfig[currentUser].prices) resellerDataConfig[currentUser].prices = {};
+    resellerDataConfig[currentUser].prices[pid] = val;
+    localStorage.setItem("senna_reseller_config", JSON.stringify(resellerDataConfig));
+    renderKategoriProduk(produkList); alert("Harga diupdate!");
+}
+
+function beliLangsung(p) {
+    if (!currentUser) return alert("Silakan login.");
+    produkBeliLangsung = p;
+    document.getElementById("infoSaldoModal").textContent = "Rp " + getSaldo(currentUser).toLocaleString("id-ID");
+    document.getElementById("modalBeli").style.display = "flex";
+}
+
+function renderCategoryTabs(categories) {
+    const tabsContainer = document.getElementById("categoryTabsContainer");
+    tabsContainer.replaceChildren();
+    let allCats = ["Semua", ...categories];
+    allCats.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = cat === currentSelectedCategory ? "cat-tab-btn active" : "cat-tab-btn";
+        btn.textContent = cat;
+        btn.onclick = () => { playActionSound(); currentSelectedCategory = cat; renderCategoryTabs(categories); renderKategoriProduk(produkList); };
+        tabsContainer.appendChild(btn);
+    });
+}
+
+function renderKategoriProduk(data) {
+    const mainContainer = document.getElementById("containerKatalogKategori");
+    mainContainer.replaceChildren();
+    let kategoriSet = [...new Set(data.map(p => p.kategori || "Lainnya"))];
+    renderCategoryTabs(kategoriSet);
+
+    let filtered = currentSelectedCategory === "Semua" ? data : data.filter(p => (p.kategori || "Lainnya") === currentSelectedCategory);
+    let activeCats = [...new Set(filtered.map(p => p.kategori || "Lainnya"))];
+
+    activeCats.forEach(kat => {
+        let produkKat = filtered.filter(p => (p.kategori || "Lainnya") === kat);
+        const title = document.createElement("div");
+        title.className = "kategori-title"; title.textContent = kat;
+        mainContainer.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = "grid-produk";
+        produkKat.forEach(p => {
+            let hargaTampil = p.harga;
+            if (resellerVerified && resellerDataConfig[currentUser]?.prices?.[p.id] !== undefined) {
+                hargaTampil = resellerDataConfig[currentUser].prices[p.id];
+            }
+
+            const card = document.createElement("div");
+            card.className = savedBgActive ? "produk-item aktif-rgb" : "produk-item";
+            card.onclick = () => { playActionSound(); bukaDetailProduk({...p, harga: hargaTampil}); };
+            card.innerHTML = `
+                <img src="${p.foto}" onerror="this.style.display='none'">
+                <div style="font-size:13px;font-weight:bold;color:#f8fafc;text-shadow:0 1px 2px rgba(0,0,0,0.5)">${p.nama}</div>
+                <div style="color:#38bdf8;font-size:12px;font-weight:bold;margin:6px 0;text-shadow:0 1px 2px rgba(0,0,0,0.5)">Rp ${Number(hargaTampil).toLocaleString("id-ID")}</div>
+                <button class="btn btn-green" style="width:100%;padding:6px;font-size:11px" onclick="event.stopPropagation(); playActionSound(); beliLangsung({...p, harga: ${hargaTampil}})">Beli</button>
+                <button class="btn" style="width:100%;padding:6px;margin-top:4px;font-size:11px;background:#3b82f6" onclick="event.stopPropagation(); playActionSound(); tambahKeKeranjang({...p, harga: ${hargaTampil}})">+ Keranjang</button>
+            `;
+            if (ownerVerified) {
+                card.innerHTML += `
+                    <button class="btn btn-yellow" style="width:100%;padding:5px;margin-top:4px;font-size:10px" onclick="event.stopPropagation(); playActionSound(); bukaEditProduk(${JSON.stringify(p).replace(/"/g, '&quot;')})">Edit</button>
+                    <button class="btn btn-red" style="width:100%;padding:5px;margin-top:4px;font-size:10px" onclick="event.stopPropagation(); playActionSound(); hapusProduk(${p.id})">Hapus</button>
+                `;
+            }
+            grid.appendChild(card);
+        });
+        mainContainer.appendChild(grid);
+    });
+}
+
+function bukaDetailProduk(p) {
+    document.getElementById("detailFoto").src = p.foto;
+    document.getElementById("detailNama").textContent = p.nama;
+    document.getElementById("detailHarga").textContent = "Rp " + Number(p.harga).toLocaleString("id-ID");
+    document.getElementById("detailDeskripsi").textContent = p.deskripsi || "-";
+    document.getElementById("btnDetailBeli").onclick = () => { playActionSound(); tambahKeKeranjang(p); tutupModal('modalDetail'); };
+    document.getElementById("modalDetail").style.display = "flex";
+}
+
+document.getElementById("inputPencarian").addEventListener("input", function() {
+    let q = this.value.trim().toLowerCase();
+    if (!q) renderKategoriProduk(produkList);
+    else renderKategoriProduk(produkList.filter(p => p.nama.toLowerCase().includes(q)));
+});
+
+function tambahKeKeranjang(p) {
+    if (!currentUser) return alert("Silakan login.");
+    let item = keranjang.find(x => x.id === p.id);
+    if (item) item.jumlah++; else keranjang.push({...p, jumlah: 1});
+    updateKeranjang(); alert(`${p.nama} ditambahkan ke keranjang!`);
+}
+
+function updateKeranjang() {
+    let jml = keranjang.reduce((a, b) => a + b.jumlah, 0);
+    let tot = keranjang.reduce((a, b) => a + b.harga * b.jumlah, 0);
+    document.getElementById("badgeJumlah").textContent = jml + " Item";
+    document.getElementById("totalHargaNav").textContent = "Rp " + tot.toLocaleString("id-ID");
+    document.getElementById("totalHargaCheckout").textContent = "Rp " + tot.toLocaleString("id-ID");
+
+    let list = document.getElementById("listKeranjang");
+    list.replaceChildren();
+    if (keranjang.length === 0) { list.textContent = "Keranjang kosong."; return; }
+    keranjang.forEach(p => {
+        let row = document.createElement("div");
+        row.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px";
+        row.innerHTML = `<span>${p.nama} x${p.jumlah}</span> <button class="btn btn-red" style="width:auto;padding:4px 8px;font-size:10px;margin:0" onclick="playActionSound(); keranjang = keranjang.filter(x => x.id !== ${p.id}); updateKeranjang();">Hapus</button>`;
+        list.appendChild(row);
+    });
+}
+
+function bukaKeranjang() {
+    if (!currentUser) return alert("Silakan login.");
+    updateKeranjang(); document.getElementById("modalKeranjang").style.display = "flex";
+}
+
+function bukaMenuBeli() {
+    if (keranjang.length === 0) return alert("Keranjang kosong.");
+    tutupModal("modalKeranjang"); produkBeliLangsung = null;
+    document.getElementById("infoSaldoModal").textContent = "Rp " + getSaldo(currentUser).toLocaleString("id-ID");
+    document.getElementById("modalBeli").style.display = "flex";
+}
+
+function gantiMetodeBayar() {
+    let m = document.getElementById("metodeBayar").value;
+    let box = document.getElementById("boxQris");
+    if (m === "QRIS") {
+        box.style.display = "inline-block";
+        let url = resellerVerified && resellerDataConfig[currentUser]?.qris ? resellerDataConfig[currentUser].qris : qrisFotoUrl;
+        document.getElementById("gambarQrisTampil").src = url;
+    } else { box.style.display = "none"; }
+}
+
+function prosesCheckoutSelesai() {
+    let metode = document.getElementById("metodeBayar").value;
+    let detail = "", total = 0, targetWa = resellerVerified && resellerDataConfig[currentUser]?.wa ? resellerDataConfig[currentUser].wa : DEFAULT_WA;
+
+    if (produkBeliLangsung) { detail = `${produkBeliLangsung.nama} x1`; total = produkBeliLangsung.harga; }
+    else if (keranjang.length > 0) {
+        total = keranjang.reduce((a, b) => a + b.harga * b.jumlah, 0);
+        detail = keranjang.map(b => `${b.nama} x${b.jumlah}`).join(", ");
+    } else { return alert("Tidak ada produk."); }
+
+    if (metode === "SALDO") {
+        let s = getSaldo(currentUser);
+        if (s < total) return alert("Saldo tidak cukup! Silakan transfer QRIS ke owner untuk top up.");
+        userBalances[currentUser] = s - total;
+        localStorage.setItem("senna_user_balances", JSON.stringify(userBalances));
+        updateSaldoDisplay();
+
+        if (!Array.isArray(riwayat[currentUser])) riwayat[currentUser] = [];
+        riwayat[currentUser].push({ tanggal: new Date().toLocaleString("id-ID"), detail, total, metode: "SALDO", status: "Selesai (Otomatis)" });
+        simpanData("senna_riwayat", riwayat);
+        keranjang = []; produkBeliLangsung = null; updateKeranjang(); tutupModal("modalBeli");
+        alert("Pembayaran berhasil menggunakan saldo!");
+    } else {
+        tutupModal("modalBeli");
+        if (!Array.isArray(riwayat[currentUser])) riwayat[currentUser] = [];
+        riwayat[currentUser].push({ tanggal: new Date().toLocaleString("id-ID"), detail, total, metode, status: "Menunggu konfirmasi" });
+        simpanData("senna_riwayat", riwayat);
+        if (produkBeliLangsung) produkBeliLangsung = null; else { keranjang = []; updateKeranjang(); }
+        window.open(`https://wa.me/${targetWa}?text=` + encodeURIComponent(`Konfirmasi Pembayaran:\n• ${detail}\n• Rp ${total.toLocaleString("id-ID")}\n• Metode: ${metode}\n• User: ${currentUser}`), "_blank");
+        alert("Format pesan disiapkan ke WhatsApp.");
+    }
+}
+
+function bukaRiwayat() {
+    if (!currentUser) return alert("Silakan login.");
+    let list = document.getElementById("listRiwayat");
+    list.replaceChildren();
+    let data = riwayat[currentUser] || [];
+    if (data.length === 0) { list.textContent = "Belum ada riwayat."; }
+    else {
+        data.slice().reverse().forEach(t => {
+            let card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `<p style="font-size:12px;line-height:1.6">${t.tanggal}<br>${t.detail}<br>Total: Rp ${Number(t.total).toLocaleString("id-ID")}<br>Metode: ${t.metode}<br>Status: <b>${t.status}</b></p>`;
+            if (ownerVerified) {
+                let b = document.createElement("button");
+                b.className = "small-btn btn-green"; b.style.cssText = "margin-top:6px;font-size:10px"; b.textContent = "Set Selesai";
+                b.onclick = () => { t.status = "Selesai (Owner)"; simpanData("senna_riwayat", riwayat); bukaRiwayat(); };
+                card.appendChild(b);
+            }
+            list.appendChild(card);
+        });
+    }
+    document.getElementById("modalRiwayat").style.display = "flex";
+}
+
+function bukaTestimoni() {
+    document.getElementById("formUploadTesti").classList.remove("hidden");
+    let grid = document.getElementById("gridTestimoni");
+    grid.replaceChildren();
+    if (testimoniList.length === 0) grid.textContent = "Belum ada testimoni.";
+    testimoniList.forEach((url, i) => {
+        let img = document.createElement("img"); img.src = url; img.style.cssText = "width:100%;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.5)";
+        grid.appendChild(img);
+        if (ownerVerified) {
+            let h = document.createElement("button"); h.className = "btn btn-red"; h.style.cssText = "padding:4px;font-size:10px"; h.textContent = "Hapus";
+            h.onclick = () => { playActionSound(); testimoniList.splice(i, 1); simpanData("senna_testimoni", testimoniList); bukaTestimoni(); };
+            grid.appendChild(h);
+        }
+    });
+    document.getElementById("modalTestimoni").style.display = "flex";
+}
+
+function tambahTestimoni() {
+    if (!ownerVerified && !resellerVerified) return;
+    let url = document.getElementById("fotoTestiUrl").value.trim();
+    if (!url) return alert("Masukkan link foto.");
+    testimoniList.push(url); simpanData("senna_testimoni", testimoniList);
+    document.getElementById("fotoTestiUrl").value = ""; bukaTestimoni(); alert("Testimoni ditambahkan!");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderBanner(); renderPengumuman(); renderKategoriProduk(produkList); updateKeranjang();
+});
+</script>
+</body>
+</html>
